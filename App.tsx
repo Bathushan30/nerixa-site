@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactLenis } from '@studio-freight/react-lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -51,8 +51,16 @@ export default function App() {
   const footerRef    = useRef<HTMLElement>(null);
   const liveMapRef   = useRef<HTMLElement>(null);
   const pricingRef   = useRef<HTMLElement>(null);
-  const testRef      = useRef<HTMLElement>(null);
-  const faqRef       = useRef<HTMLElement>(null);
+  const contactRef   = useRef<HTMLElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -237,23 +245,18 @@ export default function App() {
         });
       });
 
-      gsap.from('.pricing-card', {
-        y: 40, opacity: 0, stagger: 0.15,
-        scrollTrigger: { trigger: pricingRef.current, start: 'top 75%' },
-        duration: 0.8, ease: 'expo.out',
+      /* ── Contact Section Reveal ── */
+      gsap.from('.contact-left', {
+        x: -50, opacity: 0,
+        scrollTrigger: { trigger: contactRef.current, start: 'top 75%' },
+        duration: 1, ease: 'expo.out',
+      });
+      gsap.from('.contact-right', {
+        x: 50, opacity: 0,
+        scrollTrigger: { trigger: contactRef.current, start: 'top 75%' },
+        duration: 1, ease: 'expo.out',
       });
 
-      gsap.from('.test-card', {
-        x: 40, opacity: 0, stagger: 0.1,
-        scrollTrigger: { trigger: testRef.current, start: 'top 75%' },
-        duration: 0.8, ease: 'expo.out',
-      });
-
-      gsap.from('.faq-item', {
-        y: 20, opacity: 0, stagger: 0.08,
-        scrollTrigger: { trigger: faqRef.current, start: 'top 80%' },
-        duration: 0.6, ease: 'power2.out',
-      });
 
     });
 
@@ -265,19 +268,29 @@ export default function App() {
       <div className="grid-bg" />
 
       {/* ─── NAV ───────────────────────────────── */}
-      <nav>
-        <div className="nav-logo">
-          <span className="play-icon" />
-          NERIXA
-        </div>
-        <div className="nav-center">
-          <a href="#">Pricing</a>
-          <a href="#">Features</a>
-        </div>
-        <div className="nav-right">
-          <a href="#">Log-in</a>
-          <a href="#" className="btn-signup">Get Early Access</a>
-          <span className="theme-dot" />
+      <nav className={scrolled ? 'nav-scrolled' : ''}>
+        <div className="nav-container">
+          <div className="nav-logo">
+            <img src="/Logo.png" alt="Nerixa AI" className="logo-img" />
+          </div>
+          
+          <div className="nav-center">
+            <a href="#features">INTELLIGENCE</a>
+            <a href="#fleet">FLEET OPS</a>
+            <a href="#pricing">PRICING</a>
+            <a href="#contact">PROTOCOL</a>
+          </div>
+          
+          <div className="nav-right">
+            <div className="nav-status">
+              <span className="status-dot" />
+              <span className="status-text">SECURE NODE :: ONLINE</span>
+            </div>
+            <a href="#" className="btn-terminal">
+              <span>ACCESS COMMAND</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -714,99 +727,179 @@ export default function App() {
       {/* ─── 11. PRICING ────────────────────────── */}
       <section className="pricing-section" ref={pricingRef}>
         <div className="pricing-header">
-          <p className="pricing-label">Pricing Plans</p>
+          <p className="pricing-label">Strategic Advantage</p>
           <h2 className="pricing-title">Ready for every road.</h2>
-          <p className="pricing-sub">Choose a plan that fits your driving frequency and safety needs.</p>
+          <p className="pricing-sub">Choose the level of intelligence that fits your mission.</p>
         </div>
         <div className="pricing-grid">
           <div className="pricing-card">
-            <div className="p-badge">FREE</div>
-            <h3 className="p-name">Commuter</h3>
+            <div className="p-badge">INDIVIDUAL</div>
+            <h3 className="p-name">Scout</h3>
             <div className="p-price">$0<span>/mo</span></div>
             <ul className="p-features">
               <li>Live community reports</li>
-              <li>Standard traffic alerts</li>
-              <li>Basic hazard flags</li>
-              <li>Public police checkpoints</li>
+              <li>Standard traffic topography</li>
+              <li>Basic hazard detection</li>
+              <li>Public zone mapping</li>
             </ul>
-            <a href="#" className="p-btn">Get Started</a>
+            <a href="#" className="p-btn">Deploy Base Unit</a>
           </div>
           <div className="pricing-card featured">
-            <div className="p-badge hot">MOST POPULAR</div>
-            <h3 className="p-name">Navigator</h3>
-            <div className="p-price">$9<span>/mo</span></div>
+            <div className="p-badge">ADVANCED COMMAND</div>
+            <h3 className="p-name">Sentinel</h3>
+            <div className="p-price">$12<span>/mo</span></div>
             <ul className="p-features">
-              <li>Everything in Free</li>
-              <li>AI-Predicted Hazards</li>
-              <li>Priority Routing Engine</li>
-              <li>Real-time Speed Trap Alerts</li>
-              <li>Offline Road Maps</li>
+              <li>Priority AI Neural Data</li>
+              <li>Predictive Hazard Detection</li>
+              <li>Stealth Checkpoint Alerts</li>
+              <li>Offline Military-Grade Maps</li>
+              <li>Dual-Core Routing Engine</li>
             </ul>
-            <a href="#" className="p-btn blue">Start 7-Day Trial</a>
+            <a href="#" className="p-btn">Initialize Protocol</a>
           </div>
           <div className="pricing-card">
-            <div className="p-badge">ENTERPRISE</div>
-            <h3 className="p-name">Fleet Pro</h3>
-            <div className="p-price">Contact</div>
+            <div className="p-badge">ENTERPRISE FLEET</div>
+            <h3 className="p-name">Vanguard</h3>
+            <div className="p-price">Custom</div>
             <ul className="p-features">
-              <li>Full Fleet Monitoring</li>
-              <li>Custom Dashboard API</li>
-              <li>High-Res Satellite Data</li>
-              <li>Dedicated Support</li>
-              <li>Bulk User Licenses</li>
+              <li>Multi-Unit Fleet Control</li>
+              <li>Encrypted Custom API</li>
+              <li>High-Res Satellite Mesh</li>
+              <li>24/7 Tactical Support</li>
+              <li>Mass-Deploy Licenses</li>
             </ul>
-            <a href="#" className="p-btn">Talk to Sales</a>
+            <a href="#" className="p-btn">Request Access</a>
           </div>
         </div>
       </section>
 
-      {/* ─── 12. TESTIMONIALS ───────────────────── */}
-      <section className="testimonials-section" ref={testRef}>
-        <div className="test-header">
-          <p className="test-label">Social Proof</p>
-          <h2 className="test-title">Trusted by 200K+ drivers.</h2>
+
+
+      {/* ─── 12. TESTIMONIALS (Marquee) ─────────── */}
+      <section className="marquee-section">
+        <div className="marquee-header">
+          <p className="marquee-eyebrow">Social Proof</p>
+          <h2 className="marquee-title">Trusted by <em>200K+</em> drivers.</h2>
         </div>
-        <div className="test-track">
-          {[
-            { name: "Jessica R.", role: "Daily Commuter", text: "Saved me from three speed traps in a single week. The AI predictions are terrifyingly accurate." },
-            { name: "Mark S.", role: "Logistics Manager", text: "We optimized our entire delivery fleet's routes using Nerixa. Reduced delays by 40%." },
-            { name: "Arjun K.", role: "Road Warrior", text: "The hazard alerts for potholes and waterlogging are life-savers during monsoon season." },
-            { name: "Sarah L.", role: "Ride-share Pilot", text: "I don't drive without Nerixa. The community verification gives me peace of mind." }
-          ].map((t, i) => (
-            <div key={i} className="test-card">
-              <div className="test-stars">★★★★★</div>
-              <p className="test-text">"{t.text}"</p>
-              <div className="test-user">
-                <div className="test-avatar" />
-                <div className="test-info">
-                  <p className="test-name">{t.name}</p>
-                  <p className="test-role">{t.role}</p>
+
+        {/* Row 1 — scrolls left */}
+        <div className="marquee-row">
+          <div className="marquee-track marquee-left">
+            {[
+              { name: "Jessica R.", role: "Daily Commuter", stars: 5, text: "Saved me from three speed traps in a single week. The AI predictions are terrifyingly accurate." },
+              { name: "Mark S.", role: "Logistics Manager", stars: 5, text: "We optimized our entire delivery fleet's routes using Nerixa. Reduced delays by 40%." },
+              { name: "Arjun K.", role: "Road Warrior", stars: 5, text: "The hazard alerts for potholes and waterlogging are life-savers during monsoon season." },
+              { name: "Sarah L.", role: "Ride-share Pilot", stars: 5, text: "I don't drive without Nerixa. The community verification gives me peace of mind." },
+              { name: "Tom V.", role: "Long-Haul Driver", stars: 5, text: "Real-time re-routing saved me 2 hours on a cross-country trip. Never going back to old apps." },
+              { name: "Priya N.", role: "City Commuter", stars: 5, text: "The offline maps are insanely detailed. Zero data, full intelligence — that's a miracle." },
+              // Duplicate for seamless loop
+              { name: "Jessica R.", role: "Daily Commuter", stars: 5, text: "Saved me from three speed traps in a single week. The AI predictions are terrifyingly accurate." },
+              { name: "Mark S.", role: "Logistics Manager", stars: 5, text: "We optimized our entire delivery fleet's routes using Nerixa. Reduced delays by 40%." },
+              { name: "Arjun K.", role: "Road Warrior", stars: 5, text: "The hazard alerts for potholes and waterlogging are life-savers during monsoon season." },
+              { name: "Sarah L.", role: "Ride-share Pilot", stars: 5, text: "I don't drive without Nerixa. The community verification gives me peace of mind." },
+              { name: "Tom V.", role: "Long-Haul Driver", stars: 5, text: "Real-time re-routing saved me 2 hours on a cross-country trip. Never going back to old apps." },
+              { name: "Priya N.", role: "City Commuter", stars: 5, text: "The offline maps are insanely detailed. Zero data, full intelligence — that's a miracle." },
+            ].map((t, i) => (
+              <div key={i} className="mq-card">
+                <div className="mq-stars">{"★".repeat(t.stars)}</div>
+                <p className="mq-text">"{t.text}"</p>
+                <div className="mq-user">
+                  <div className="mq-avatar">{t.name[0]}</div>
+                  <div>
+                    <p className="mq-name">{t.name}</p>
+                    <p className="mq-role">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — scrolls right */}
+        <div className="marquee-row">
+          <div className="marquee-track marquee-right">
+            {[
+              { name: "Daniel O.", role: "Uber Driver", stars: 5, text: "Nerixa's checkpoint alerts are precise. My passengers have started asking what app I'm using." },
+              { name: "Lin W.", role: "Fleet Manager", stars: 5, text: "Managing 80 vehicles got so much easier. The command dashboard is built for professionals." },
+              { name: "Carlos M.", role: "Emergency Courier", stars: 5, text: "Speed + accuracy is everything in my line of work. Nerixa delivers both, every single time." },
+              { name: "Aisha F.", role: "Remote Worker", stars: 5, text: "Mountain roads, zero signal. The offline satellite mesh kept me on track through the highlands." },
+              { name: "Jake T.", role: "Weekend Explorer", stars: 5, text: "The predictive hazard system flagged a washed-out bridge 4 miles before I got there. Unbelievable." },
+              { name: "Meera S.", role: "Delivery Partner", stars: 5, text: "Cut my delivery time by 28% in the first month. The AI routing is simply on another level." },
+              // Duplicate for seamless loop
+              { name: "Daniel O.", role: "Uber Driver", stars: 5, text: "Nerixa's checkpoint alerts are precise. My passengers have started asking what app I'm using." },
+              { name: "Lin W.", role: "Fleet Manager", stars: 5, text: "Managing 80 vehicles got so much easier. The command dashboard is built for professionals." },
+              { name: "Carlos M.", role: "Emergency Courier", stars: 5, text: "Speed + accuracy is everything in my line of work. Nerixa delivers both, every single time." },
+              { name: "Aisha F.", role: "Remote Worker", stars: 5, text: "Mountain roads, zero signal. The offline satellite mesh kept me on track through the highlands." },
+              { name: "Jake T.", role: "Weekend Explorer", stars: 5, text: "The predictive hazard system flagged a washed-out bridge 4 miles before I got there. Unbelievable." },
+              { name: "Meera S.", role: "Delivery Partner", stars: 5, text: "Cut my delivery time by 28% in the first month. The AI routing is simply on another level." },
+            ].map((t, i) => (
+              <div key={i} className="mq-card mq-card-dark">
+                <div className="mq-stars">{"★".repeat(t.stars)}</div>
+                <p className="mq-text">"{t.text}"</p>
+                <div className="mq-user">
+                  <div className="mq-avatar mq-avatar-blue">{t.name[0]}</div>
+                  <div>
+                    <p className="mq-name">{t.name}</p>
+                    <p className="mq-role">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 13. CONTACT PROTOCOL ───────────────── */}
+      <section className="contact-section" ref={contactRef}>
+        <div className="contact-grid">
+          <div className="contact-left">
+            <p className="contact-label">Secure Channel</p>
+            <h2 className="contact-title">Establish Connection.</h2>
+            <p className="contact-sub">Direct line to Nerixa AI Operations. Our specialists are ready to integrate intelligence into your fleet.</p>
+            
+            <div className="contact-nodes">
+              <div className="c-node">
+                <div className="c-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <div>
+                  <h4>Base Coordinates</h4>
+                  <p>Cybernetics Hub, Neo-Grid, Sector 4</p>
+                </div>
+              </div>
+              <div className="c-node">
+                <div className="c-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <div>
+                  <h4>Comm Link</h4>
+                  <p>command@nerixa.ai</p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── 13. FAQ ────────────────────────────── */}
-      <section className="faq-section" ref={faqRef}>
-        <div className="faq-left">
-          <p className="faq-label">Questions?</p>
-          <h2 className="faq-title">Frequently Asked Questions</h2>
-          <p className="faq-sub">Everything you need to know about Nerixa AI and road intelligence.</p>
-        </div>
-        <div className="faq-right">
-          {[
-            { q: "How does Nerixa verify incidents?", a: "We use a multi-layered approach: initial community reports, secondary verification by nearby drivers, and AI cross-referencing with official road sensors." },
-            { q: "Does it drain my phone's battery?", a: "Nerixa is optimized for minimal background battery usage. We use proprietary low-energy geolocation tech to keep you updated without killing your charge." },
-            { q: "Is my location data private?", a: "Absolutely. All reporting is anonymized, and we never sell your personal route history to third parties. Your safety and privacy are our top priorities." },
-            { q: "Can I use Nerixa offline?", a: "Navigator and Fleet Pro users can download high-resolution maps for entire regions, ensuring you have intelligence even in zero-reception zones." }
-          ].map((item, i) => (
-            <div key={i} className="faq-item">
-              <h4 className="faq-q">{item.q}</h4>
-              <p className="faq-a">{item.a}</p>
-            </div>
-          ))}
+          </div>
+          
+          <div className="contact-right">
+            <form className="contact-form" onSubmit={e => e.preventDefault()}>
+              <div className="form-header">
+                <span className="live-dot"></span>
+                <span>SYSTEM SECURE. READY FOR TRANSMISSION.</span>
+              </div>
+              <div className="form-group">
+                <label>OPERATOR IDENTIFICATION</label>
+                <input type="text" placeholder="Enter Full Name" />
+              </div>
+              <div className="form-group">
+                <label>COMM ID</label>
+                <input type="email" placeholder="Enter Email Address" />
+              </div>
+              <div className="form-group">
+                <label>TRANSMISSION LOG</label>
+                <textarea rows={4} placeholder="Type your message..."></textarea>
+              </div>
+              <button type="submit" className="c-btn">Initiate Transfer</button>
+            </form>
+          </div>
         </div>
       </section>
 
